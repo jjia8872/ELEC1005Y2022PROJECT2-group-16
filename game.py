@@ -161,6 +161,8 @@ class Game:
             self.strawberry.random_pos(self.snake)
             reward = 1
             self.snake.score += 1
+            eat_sound=pygame.mixer.Sound('./sound/15060.wav')
+            pygame.mixer.Sound.play(eat_sound)
         else:
             self.snake.segments.pop()
             reward = 0

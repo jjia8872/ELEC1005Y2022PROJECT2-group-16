@@ -87,6 +87,8 @@ def crash():
 
 def initial_interface():
     intro = True
+    track = pygame.mixer.music.load('./sound/main.wav')
+    pygame.mixer.music.play()
     while intro:
 
         for event in pygame.event.get():

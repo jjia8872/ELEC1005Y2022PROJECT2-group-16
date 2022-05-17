@@ -47,6 +47,13 @@ def message_display(text, x, y, color=black):
     screen.blit(text_surf, text_rect)
     pygame.display.update()
 
+def display_text(text, x, y, color=black):
+    small_text = pygame.font.SysFont('comicsansms', 15)
+    text_surf, text_rect = text_objects(text, small_text, black)
+    text_rect.center = (x,y)
+    screen.blit(text_surf, text_rect)
+    pygame.display.update()
+
 
 def button(msg, x, y, w, h, inactive_color, active_color, action=None, parameter=None):
     mouse = pygame.mouse.get_pos()
@@ -91,10 +98,36 @@ def initial_interface():
 
         button('Go!', 80, 240, 80, 40, green, bright_green, game_loop, 'human')
         button('Quit', 270, 240, 80, 40, red, bright_red, quitgame)
+        button('Help?',175,300,80,40,blue,bright_blue,help_screen)
 
         pygame.display.update()
         pygame.time.Clock().tick(15)
 
+def help_screen():
+    
+    help_screen = pygame.display.set_mode((game.settings.width * 15, game.settings.height * 15))
+    pygame.display.set_caption('HELP')
+    while True:
+        fpsClock = pygame.time.Clock()
+        pygame.display.init
+        help_screen.fill(white)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        
+        message_display('Help', game.settings.width / 2 * 15, game.settings.height / 4 * 15)
+        display_text('Use the arrow keys on the keyboard up, down, left',220,170)
+        display_text('and right to control the direction of the snake, looking',220,190)
+        display_text('for something to eat, each bite will get a certain number',220,210)
+        display_text("of points, and the snake's body will eat longer and longer,",220,230)
+        display_text("the longer the body to play the more difficult,can not touch",220,250)
+        display_text("the wall, can not bite their own body, more can not bite their",220,270)
+        display_text("own body, more can not bite their own tail. The only goal of",220,290)
+        display_text("the snake is to grow into the longest snake!",220,310)
+        button('return',175, 350, 80, 40, red, bright_red,initial_interface)
+        button('Quit', 270, 350, 80, 40, red, bright_red, quitgame)
+        pygame.display.update()
+        pygame.time.Clock().tick(10)
 
 def game_loop(player, fps=10):
     game.restart_game()

@@ -49,10 +49,11 @@ def message_display(text, x, y, color=black):
 
 def display_text(text, x, y, color=black):
     small_text = pygame.font.SysFont('comicsansms', 15)
-    text_surf, text_rect = text_objects(text, small_text, color)
+    text_surf, text_rect = text_objects(text, small_text, black)
     text_rect.center = (x,y)
     screen.blit(text_surf, text_rect)
     pygame.display.update()
+
 
 def button(msg, x, y, w, h, inactive_color, active_color, action=None, parameter=None):
     mouse = pygame.mouse.get_pos()
@@ -72,213 +73,87 @@ def button(msg, x, y, w, h, inactive_color, active_color, action=None, parameter
     TextRect.center = (x + (w / 2), y + (h / 2))
     screen.blit(TextSurf, TextRect)
 
-def level_button(msg, x, y, w, h, inactive_color, active_color, action=None, parameter =None,parameter_two = None,parameter_three = None,parameter_four = None):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-
-    if x + w > mouse[0] > x and y + h > mouse[1] > y:
-        pygame.draw.rect(screen, active_color, (x, y, w, h))
-        if click[0] == 1 and action != None:
-            if parameter != None and parameter_two != None and parameter_three != None and parameter_four != None:
-                action(parameter,parameter_two,parameter_three)
-                initial_interface(parameter_three,parameter_four)
-            elif parameter != None and parameter_two != None:
-                action(parameter,parameter_two)
-            elif parameter != None:
-                action(parameter,parameter_three)
-            else:
-                action()
-
-
-    else:
-        pygame.draw.rect(screen, inactive_color, (x, y, w, h))
-        
-    smallText = pygame.font.SysFont('comicsansms', 20)
-    TextSurf, TextRect = text_objects(msg, smallText)
-    TextRect.center = (x + (w / 2), y + (h / 2))
-    screen.blit(TextSurf, TextRect)
-    
 
 def quitgame():
     pygame.quit()
     quit()
 
 
-def crash(text_color):
+def crash():
     pygame.mixer.Sound.play(crash_sound)
-    message_display('crashed', game.settings.width / 2 * 15, game.settings.height / 3 * 15, text_color)
+    message_display('crashed', game.settings.width / 2 * 15, game.settings.height / 3 * 15, white)
     time.sleep(1)
 
-    
-def initial_interface(color = white, music = True):
-    pygame.init()
-    pygame.display.set_caption('Gluttonous')
+
+def initial_interface():
     intro = True
-    bg1= pygame.image.load('./images/main_1.png')
-    bg2= pygame.image.load('./images/main_2.jpeg')
-    move1 = pygame.image.load('./images/night.png')
-    x = 0
-    y = 450
     track = pygame.mixer.music.load('./sound/main.wav')
     pygame.mixer.music.play()
-    if music == False:
-        pygame.mixer.music.pause()
-    else:
-        pygame.mixer.music.unpause()
-        
-    if color == white:
-        text_color = black
-    else:
-        text_color = white
     while intro:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-        screen.fill(color)
-        screen.blit(pygame.transform.scale(bg1,(250,250)),(250,200))
-        screen.blit(pygame.transform.scale(bg2,(250,250)),(0,200))
-        if x >450:
-            x = 0
-        if y <0:
-            y = 450
-        z = y - 200
-        if z < 0:
-            z+=450 
-        screen.blit(pygame.transform.scale(move1,(30,30)),(y,150))
-        screen.blit(pygame.transform.scale(move1,(30,30)),(z,150))
-        screen.blit(pygame.transform.scale(move1,(30,30)),(x,50))
-        x+=10
-        y-=10
-        message_display('Gluttonous', game.settings.width / 2 * 15, game.settings.height / 4 * 15,text_color)
-        level_button('Go!', 175, 200, 80, 40, green, bright_green, level_screen,color,music)
-        button('Quit', 175, 300, 80, 40, red, bright_red, quitgame)
-        level_button('Help?',0,0,80,40,blue,bright_blue,help_screen,color,music)
-        level_button('Setting',370,0,80,40,green,bright_green,setting_screen,color,music)
-        
+
+        screen.fill(white)
+        message_display('Gluttonous', game.settings.width / 2 * 15, game.settings.height / 4 * 15)
+
+        button('Go!', 80, 240, 80, 40, green, bright_green, game_loop, 'human')
+        button('Quit', 270, 240, 80, 40, red, bright_red, quitgame)
+        button('Help?',175,300,80,40,blue,bright_blue,help_screen)
+
         pygame.display.update()
         pygame.time.Clock().tick(15)
-        
-def setting_screen(color = white,music = True):
-    pygame.display.set_caption('Setting')
-    if color == white:
-        text_color = black
-    else:
-        text_color = white
-    intro = True
-    if music == False:
-        pygame.mixer.music.pause()
-    else:
-        pygame.mixer.music.unpause()
-    while intro:
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-        screen.fill(color)
-        
-        message_display('Setting', game.settings.width / 2 * 15, game.settings.height / 4 * 15,text_color)
-        display_text('The colours of the game(Dark mode/Light mode)',220,170,text_color)
-        level_button('Dark',280,210,80,40,green, bright_green,setting_screen,black,music)
-        level_button('Light',350,210,80,40,green, bright_green,setting_screen,white,music)
-        level_button('return',175, 350, 80, 40, red, bright_red,initial_interface,color,music)
-
-        display_text('Background music',220,260,text_color)
-        level_button('On',280,300,80,40,green, bright_green,setting_screen,color,True)
-        level_button('Off',350,300,80,40,green, bright_green,setting_screen,color,False)
-        
-        pygame.display.update()
-        pygame.time.Clock().tick(15)
-        
-def level_screen(color = white,music = True):
-    pygame.display.set_caption('Level')
-    if color == white:
-        text_color = black
-    else:
-        text_color = white
-    intro = True
-    message_display('Gluttonous', game.settings.width / 2 * 15, game.settings.height / 4 * 15,text_color)
-    display_text('Please select the difficulty of the game',220,170,text_color)
-    display_text('(Default game difficulty is easy)',220,190,text_color)
-    screen.fill(color)
-    while intro:
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-        message_display('Gluttonous', game.settings.width / 2 * 15, game.settings.height / 4 * 15,text_color)
-        display_text('Please select the difficulty of the game',220,170,text_color)
-        display_text('(Default game difficulty is easy)',220,190,text_color)
-        screen.fill(color)
-        level_button('Easy',80,240,80,40,green, bright_green,game_loop,'human',5,color,music)
-        level_button('Medium',175,240,80,40,green, bright_green,game_loop,'human',15,color,music)
-        level_button('Difficult',270,240,80,40,green, bright_green,game_loop,'human',30,color,music)
-        level_button('return',175, 350, 80, 40, red, bright_red,initial_interface,color,music)
-        pygame.display.update()
-        pygame.time.Clock().tick(15)
-        
-
+def help_screen():
     
-def help_screen(color = white,music = True):
-    if color == white:
-        text_color = black
-    else:
-        text_color = white
-    #help_screen = pygame.display.set_mode((game.settings.width * 15, game.settings.height * 15))
+    help_screen = pygame.display.set_mode((game.settings.width * 15, game.settings.height * 15))
     pygame.display.set_caption('HELP')
     while True:
-        #fpsClock = pygame.time.Clock()
-        #pygame.display.init
-        #help_screen.fill(white)
+        fpsClock = pygame.time.Clock()
+        pygame.display.init
+        help_screen.fill(white)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-        screen.fill(color)
-        message_display('Help', game.settings.width / 2 * 15, game.settings.height / 4 * 15,text_color)
-        display_text('Use the arrow keys on the keyboard up, down, left',220,170,text_color)
-        display_text('and right to control the direction of the snake, looking',220,190,text_color)
-        display_text('for something to eat, each bite will get a certain number',220,210,text_color)
-        display_text("of points, and the snake's body will eat longer and longer,",220,230,text_color)
-        display_text("the longer the body to play the more difficult,can not touch",220,250,text_color)
-        display_text("the wall, can not bite their own body, more can not bite their",220,270,text_color)
-        display_text("own body, more can not bite their own tail. The only goal of",220,290,text_color)
-        display_text("the snake is to grow into the longest snake!",220,310,text_color)
-        level_button('return',175, 350, 80, 40, red, bright_red,initial_interface,color,music)
-        button('Quit', 270, 350, 80, 40, red, bright_red, quitgame)
         
+        message_display('Help', game.settings.width / 2 * 15, game.settings.height / 4 * 15)
+        display_text('Use the arrow keys on the keyboard up, down, left',220,170)
+        display_text('and right to control the direction of the snake, looking',220,190)
+        display_text('for something to eat, each bite will get a certain number',220,210)
+        display_text("of points, and the snake's body will eat longer and longer,",220,230)
+        display_text("the longer the body to play the more difficult,can not touch",220,250)
+        display_text("the wall, can not bite their own body, more can not bite their",220,270)
+        display_text("own body, more can not bite their own tail. The only goal of",220,290)
+        display_text("the snake is to grow into the longest snake!",220,310)
+        button('return',175, 350, 80, 40, red, bright_red,initial_interface)
+        button('Quit', 270, 350, 80, 40, red, bright_red, quitgame)
         pygame.display.update()
-        pygame.time.Clock().tick(15)
-    
+        pygame.time.Clock().tick(10)
 
-
-def game_loop(player, fps,color = white):
+def game_loop(player, fps=10):
     game.restart_game()
-    bg= pygame.image.load('./images/day.bmp')
-    
-    if color == white:
-        text_color = black
-    else:
-        text_color = white
+
     while not game.game_end():
 
         pygame.event.pump()
 
         move = human_move()
-        
+        fps = 5
 
         game.do_move(move)
 
-        screen.fill(color)
-        screen.blit(pygame.transform.scale(bg,(450,450)),(0,0))
+        screen.fill(black)
+
         game.snake.blit(rect_len, screen)
         game.strawberry.blit(screen)
-        game.blit_score(text_color, screen)
+        game.blit_score(white, screen)
 
         pygame.display.flip()
 
         fpsClock.tick(fps)
 
-    crash(text_color)
+    crash()
 
 
 def human_move():

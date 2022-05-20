@@ -23,7 +23,7 @@ blue = pygame.Color(32, 178, 170)
 bright_blue = pygame.Color(32, 200, 200)
 yellow = pygame.Color(255, 205, 0)
 bright_yellow = pygame.Color(255, 255, 0)
-
+dark = pygame.Color(128, 128, 128)
 game = Game()
 rect_len = game.settings.rect_len
 snake = game.snake
@@ -33,6 +33,7 @@ screen = pygame.display.set_mode((game.settings.width * 15, game.settings.height
 pygame.display.set_caption('Gluttonous')
 
 crash_sound = pygame.mixer.Sound('./sound/crash.wav')
+
 
 
 def text_objects(text, font, color=black):
@@ -108,15 +109,15 @@ def crash(text_color):
     pygame.mixer.Sound.play(crash_sound)
     message_display('crashed', game.settings.width / 2 * 15, game.settings.height / 3 * 15, text_color)
     time.sleep(1)
-
     
 def initial_interface(color = white, music = True):
     pygame.init()
     pygame.display.set_caption('Gluttonous')
     intro = True
-    bg1= pygame.image.load('./images/main_1.png')
-    bg2= pygame.image.load('./images/main_2.jpeg')
-    move1 = pygame.image.load('./images/night.png')
+    bg1= pygame.image.load('./images/main1.png')
+    bg2= pygame.image.load('./images/main_2.png')
+    moveL = pygame.image.load('./images/moveL.png')
+    moveR = pygame.image.load('./images/moveR.png')
     x = 0
     y = 450
     track = pygame.mixer.music.load('./sound/main.wav')
@@ -130,24 +131,31 @@ def initial_interface(color = white, music = True):
         text_color = black
     else:
         text_color = white
+        
+
+        
     while intro:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
         screen.fill(color)
-        screen.blit(pygame.transform.scale(bg1,(250,250)),(250,200))
-        screen.blit(pygame.transform.scale(bg2,(250,250)),(0,200))
+        screen.blit(pygame.transform.scale(bg1,(550,550)),(100,50))
+        screen.blit(pygame.transform.scale(bg2,(550,550)),(-200,50))
         if x >450:
             x = 0
         if y <0:
             y = 450
         z = y - 200
+        n = x +200
         if z < 0:
-            z+=450 
-        screen.blit(pygame.transform.scale(move1,(30,30)),(y,150))
-        screen.blit(pygame.transform.scale(move1,(30,30)),(z,150))
-        screen.blit(pygame.transform.scale(move1,(30,30)),(x,50))
+            z+=450
+        if n>450:
+            n -=450
+        screen.blit(pygame.transform.scale(moveL,(70,70)),(y,130))
+        screen.blit(pygame.transform.scale(moveL,(70,70)),(z,130))
+        screen.blit(pygame.transform.scale(moveR,(70,70)),(x,30))
+        screen.blit(pygame.transform.scale(moveR,(70,70)),(n,30))
         x+=10
         y-=10
         message_display('Gluttonous', game.settings.width / 2 * 15, game.settings.height / 4 * 15,text_color)
@@ -252,13 +260,18 @@ def help_screen(color = white,music = True):
 
 
 def game_loop(player, fps,color = white):
+    
     game.restart_game()
-    bg= pygame.image.load('./images/day.bmp')
+    
     
     if color == white:
         text_color = black
+        bgcolor = dark
+        bg= pygame.image.load('./images/day.png')
     else:
         text_color = white
+        bgcolor = dark
+        bg= pygame.image.load('./images/night.png')
     while not game.game_end():
 
         pygame.event.pump()
@@ -268,7 +281,7 @@ def game_loop(player, fps,color = white):
 
         game.do_move(move)
 
-        screen.fill(color)
+        screen.fill(bgcolor)
         screen.blit(pygame.transform.scale(bg,(450,450)),(0,0))
         game.snake.blit(rect_len, screen)
         game.strawberry.blit(screen)

@@ -129,7 +129,6 @@ def initial_interface(color = white, music = True):
         
     if color == white:
         text_color = black
-        move1 = pygame.image.load('./images/snake.jpeg')
     else:
         text_color = white
         

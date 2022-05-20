@@ -292,6 +292,7 @@ def game_loop(player, fps,color = white):
         fpsClock.tick(fps)
 
     crash(text_color)
+    game.snake.facing = 'right'
 
 
 def human_move():

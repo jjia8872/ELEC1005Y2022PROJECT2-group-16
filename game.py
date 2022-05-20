@@ -9,8 +9,8 @@ import numpy as np
 
 class Settings:
     def __init__(self):
-        self.width = 28
-        self.height = 28
+        self.width = 30
+        self.height = 30
         self.rect_len = 15
 
 class Snake:
@@ -161,6 +161,8 @@ class Game:
             self.strawberry.random_pos(self.snake)
             reward = 1
             self.snake.score += 1
+            eat_sound=pygame.mixer.Sound('./sound/15060.wav')
+            pygame.mixer.Sound.play(eat_sound)
         else:
             self.snake.segments.pop()
             reward = 0
